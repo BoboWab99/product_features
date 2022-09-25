@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Features</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="main.css">
+
+</head>
+
+<body class="p-5">
+    <div class="container">
+        <form action="#">
+            <h4 class="mb-5">New product</h4>
+            <div class="form-field mb-3">
+                <label for="productName">Name</label>
+                <input class="form-control" type="text" id="productName" name="productName">
+            </div>
+            <div class="form-field mb-3">
+                <label for="productCategory">Category</label>
+                <input class="form-control" type="text" id="productName" name="productCategory">
+            </div>
+            <div class="form-field mb-3">
+                <label for="deliveryQty">Delivery Quantity</label>
+                <input class="form-control" type="text" id="productName" name="deliveryQty">
+            </div>
+            <div class="form-field mb-3">
+                <label for="deliveryPrice">Delivery Price</label>
+                <input class="form-control" type="text" id="productName" name="deliveryPrice">
+            </div>
+            <div id="features">
+                <h5>Product Features</h5>
+                <table class="table table-striped"><tbody></tbody></table>
+            </div>
+            <button type="button" class="btn btn-outline-success border-0" data-bs-toggle="modal" data-bs-target="#featureModal">
+                <i class="fa-solid fa-plus"></i>
+                <span class="ms-2">Add feature</span>
+            </button>
+        </form>
+    </div>
+
+
+    <div class="modal fade" id="featureModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="featureModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="featureModalLabel">Product feature</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-field mb-3">
+                        <label for="featureName">Name</label>
+                        <input class="form-control" type="text" id="featureName" name="feature-name">
+                    </div>
+                    <h5>Feature values</h5>
+                    <ul class="list-features" id="featuresList">
+                        <li class="line-focus position-relative mb-2">
+                            <input type="text" name="feature-value" class="form-control border-0 border-bottom rounded-0" placeholder="Value 1">
+                            <button type="button" class="btn-close"></button>
+                        </li>
+                    </ul>
+                    <div class="text-center">
+                        <button type="button" id="valuePlusBtn" class="btn btn-outline-success border-0">
+                            <i class="fas fa-plus"></i>
+                            <span class="ms-2">Add</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="m-0 btn btn-outline-dark border-0 me-2" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="m-0 btn btn-primary" id="saveFeature" data-bs-toggle="modal" data-bs-target="#featureModal2">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="featureModal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="featureModal2Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="featureModal2Label">Feature affects product price?</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="check">
+                        <span>
+                            <label for="answerNo">No</label>
+                            <input type="radio" id="answerNo" name="affectsPrice">
+                        </span>
+                        <span>
+                            <label for="answerYes">Yes</label>
+                            <input type="radio" id="answerYes" name="affectsPrice">
+                        </span>
+                    </div> 
+                    <div id="prices"></div>            
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="m-0 btn btn-outline-dark border-0 me-2" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="m-0 btn btn-primary" id="saveFeature">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://kit.fontawesome.com/e307a20384.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
