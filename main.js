@@ -7,6 +7,33 @@ const answerType = document.getElementById('AnswerType');
 const isRequired = document.getElementById('isRequired');
 
 
+function getFeatureValues(tr) {
+    const tableBody1 = tr.firstElementChild.querySelector('tbody');
+    const row11 = tableBody1.firstElementChild;
+    const row12 = row11.nextElementSibling;
+    const row13 = row12.nextElementSibling;
+
+    const tableBody2 = tr.lastElementChild.querySelector('tbody');
+    let values = [];
+    for (let index = 0; index < tableBody2.childElementCount; index++) {
+        const row2x = tableBody2.children[index];
+        const value = row2x.firstElementChild.textContent;
+        const price = row2x.lastElementChild.textContent;
+        values.push({
+            'featureValue': value,
+            'featurePrice': price
+        });
+    }
+
+    return {
+        'featureName': row11.firstElementChild.textContent,
+        'answerType': row12.lastElementChild.textContent,
+        'required': (row13.lastElementChild.textContent == 'Yes') ? true : false,
+        'values': values
+    }
+}
+
+
 window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.btn-close').forEach(btn => {
         AddDeleteLiFn(btn);
@@ -144,6 +171,7 @@ saveFeatureBtn.addEventListener('click', () => {
             saveFeatureBtn.removeAttribute('data-edit-index');
         } else {
             features.appendChild(tr);
+            console.log(getFeatureValues(tr));
         }
         featureModal.querySelector('[data-bs-dismiss="modal"]').click();
     }
