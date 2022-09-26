@@ -50,10 +50,16 @@ saveFeatureBtn.addEventListener('click', () => {
     td2.setAttribute('colspan', 2);
     td2.style.padding = '0';
 
-    let innerTable = document.createElement('table');
-    let tableBody = document.createElement('tbody');
-    innerTable.appendChild(tableBody);
-    innerTable.setAttribute('class', 'table mb-0');
+    // @TODO: support for isRequired and AnswerType
+    // let innerTable1 = document.createElement('table');
+    // let tableBody1 = document.createElement('tbody');
+    // innerTable1.appendChild(tableBody2);
+    // innerTable1.setAttribute('class', 'table mb-0');
+    
+    let innerTable2 = document.createElement('table');
+    let tableBody2 = document.createElement('tbody');
+    innerTable2.appendChild(tableBody2);
+    innerTable2.setAttribute('class', 'table mb-0');
 
     let editBtn = document.createElement('a');
     editBtn.setAttribute('class', 'card-link ms-2');
@@ -74,20 +80,20 @@ saveFeatureBtn.addEventListener('click', () => {
             break;
         }
 
-        let innerRow = document.createElement('tr');
-        let innerTd1 = document.createElement('td');
-        let innerTd2 = document.createElement('td');
-        innerTd1.appendChild(document.createTextNode(clean(valueField.value)));
-        innerTd2.appendChild(document.createTextNode(clean(priceField.value)));
-        innerRow.appendChild(innerTd1);
-        innerRow.appendChild(innerTd2);
-        tableBody.appendChild(innerRow);
+        let innerRow2 = document.createElement('tr');
+        let innerTd21 = document.createElement('td');
+        let innerTd22 = document.createElement('td');
+        innerTd21.appendChild(document.createTextNode(clean(valueField.value)));
+        innerTd22.appendChild(document.createTextNode(clean(priceField.value)));
+        innerRow2.appendChild(innerTd21);
+        innerRow2.appendChild(innerTd22);
+        tableBody2.appendChild(innerRow2);
     }
 
     if (formValid) {
         td1.appendChild(document.createTextNode(nameField.value));
         td1.appendChild(editBtn);
-        td2.appendChild(innerTable);
+        td2.appendChild(innerTable2);
         tr.appendChild(td1);
         tr.appendChild(td2);
 
