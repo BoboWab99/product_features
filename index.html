@@ -33,9 +33,9 @@
                 <label for="deliveryPrice">Delivery Price</label>
                 <input class="form-control" type="text" id="productName" name="deliveryPrice">
             </div>
-            <div id="features">
-                <h5>Product Features</h5>
-                <table class="table table-striped"><tbody></tbody></table>
+            <div class="features">
+                <h5 class="mb-4">Product Features</h5>
+                <table class="table table-bordered"><tbody id="features"></tbody></table>
             </div>
             <button type="button" class="btn btn-outline-success border-0" data-bs-toggle="modal" data-bs-target="#featureModal">
                 <i class="fa-solid fa-plus"></i>
@@ -46,7 +46,7 @@
 
 
     <div class="modal fade" id="featureModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="featureModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-fullscreen-sm-down">
             <div class="modal-content">
                 <div class="modal-header border-0">
                     <h5 class="modal-title" id="featureModalLabel">Product feature</h5>
@@ -56,11 +56,12 @@
                         <label for="featureName">Name</label>
                         <input class="form-control" type="text" id="featureName" name="feature-name">
                     </div>
-                    <h5>Feature values</h5>
+                    <h6 class="mb-3">Feature values & Prices</h6>
                     <ul class="list-features" id="featuresList">
-                        <li class="line-focus position-relative mb-2">
-                            <input type="text" name="feature-value" class="form-control border-0 border-bottom rounded-0" placeholder="Value 1">
-                            <button type="button" class="btn-close"></button>
+                        <li class="line-focus d-flex position-relative mb-2">
+                            <input type="text" name="feature-value" class="form-control" placeholder="Value 1">
+                            <input type="number" name="feature-price" class="form-control" placeholder="Price" min="0">
+                            <button type="button" class="btn-close" title="Remove"></button>
                         </li>
                     </ul>
                     <div class="text-center">
@@ -69,34 +70,6 @@
                             <span class="ms-2">Add</span>
                         </button>
                     </div>
-                </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="m-0 btn btn-outline-dark border-0 me-2" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="m-0 btn btn-primary" id="saveFeature" data-bs-toggle="modal" data-bs-target="#featureModal2">Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="featureModal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="featureModal2Label" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title" id="featureModal2Label">Feature affects product price?</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="check">
-                        <span>
-                            <label for="answerNo">No</label>
-                            <input type="radio" id="answerNo" name="affectsPrice">
-                        </span>
-                        <span>
-                            <label for="answerYes">Yes</label>
-                            <input type="radio" id="answerYes" name="affectsPrice">
-                        </span>
-                    </div> 
-                    <div id="prices"></div>            
                 </div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="m-0 btn btn-outline-dark border-0 me-2" data-bs-dismiss="modal">Close</button>
