@@ -4,31 +4,10 @@ ul {
     padding: 0;
 }
 
-.list-features {
-    counter-reset: css-counter 0;
-}
-
 .list-features li {
     gap: 0.5rem;
-    padding-left: 1.5rem;
     padding-right: 2rem;
 }
-
-.list-features li::before {
-    counter-increment: css-counter 1;
-    content: counter(css-counter) ". ";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    /* font-size: 1.1rem;
-    font-weight: 500; */
-}
-
-/* .list-features li>input {
-    padding-left: 2rem;
-    padding-right: 2rem;
-} */
 
 .list-features li>button {
     position: absolute;

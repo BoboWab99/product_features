@@ -3,11 +3,13 @@ const featuresList = document.getElementById('featuresList');
 const saveFeatureBtn = document.getElementById('saveFeature');
 const plusBtn = document.getElementById('valuePlusBtn');
 const features = document.getElementById('features');
+const answerType = document.getElementById('AnswerType');
+const isRequired = document.getElementById('isRequired');
 
 
 window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.btn-close').forEach(btn => {
-        AddDeleteFn(btn);
+        AddDeleteLiFn(btn);
     });
 });
 
@@ -37,37 +39,53 @@ featuresList.addEventListener('keydown', (e) => {
 
 saveFeatureBtn.addEventListener('click', () => {
     let formValid = true;
-    let nameField = featureModal.querySelector('[name="feature-name"]');
+    const nameField = featureModal.querySelector('[name="feature-name"]');
     if(nameField.value.length < 1) {
         nameField.focus();
         formValid = false;
         return;
     }
 
-    let tr = document.createElement('tr');
-    let td1 = document.createElement('td');
-    let td2 = document.createElement('td');
-    td2.setAttribute('colspan', 2);
+    const tr = document.createElement('tr');
+    const td1 = document.createElement('td');
+    const td2 = document.createElement('td');
+    // td2.setAttribute('colspan', 2);
+    tr.setAttribute('class', 'border-dark');
+    td1.setAttribute('class', 'border-dark p-0 w-50');
+    td2.setAttribute('class', 'border-dark p-0 w-50');
+    td1.style.padding = '0';
     td2.style.padding = '0';
 
-    // @TODO: support for isRequired and AnswerType
-    // let innerTable1 = document.createElement('table');
-    // let tableBody1 = document.createElement('tbody');
-    // innerTable1.appendChild(tableBody2);
-    // innerTable1.setAttribute('class', 'table mb-0');
-    
-    let innerTable2 = document.createElement('table');
-    let tableBody2 = document.createElement('tbody');
-    innerTable2.appendChild(tableBody2);
-    innerTable2.setAttribute('class', 'table mb-0');
+    const innerTable1 = document.createElement('table');
+    const tableBody1 = document.createElement('tbody');
+    innerTable1.appendChild(tableBody1);
+    innerTable1.setAttribute('class', 'table mb-0');
 
-    let editBtn = document.createElement('a');
-    editBtn.setAttribute('class', 'card-link ms-2');
+    const td11 = document.createElement('td');
+    const td12 = document.createElement('td');
+    const td13 = document.createElement('td');
+    const td14 = document.createElement('td');
+    const td15 = document.createElement('td');
+    const td16 = document.createElement('td');
+
+    const editBtn = document.createElement('a');
+    editBtn.setAttribute('class', 'card-link');
     editBtn.setAttribute('href', '#');
     editBtn.appendChild(document.createTextNode('Edit'));
     AddEditFn(editBtn);
+    
+    const delBtn = document.createElement('a');
+    delBtn.setAttribute('class', 'card-link text-red');
+    delBtn.setAttribute('href', '#');
+    delBtn.appendChild(document.createTextNode('Delete'));
+    AddDeleteFeatureFn(delBtn);
 
-    let clean = (value) => (value.length > 0) ? value : '---';
+    const innerTable2 = document.createElement('table');
+    const tableBody2 = document.createElement('tbody');
+    innerTable2.appendChild(tableBody2);
+    innerTable2.setAttribute('class', 'table mb-0');
+
+    const clean = (value) => (value.length > 0) ? value : '---';
 
     for (let index = 0; index < featuresList.childElementCount; index++) {
         const li = featuresList.children[index];
@@ -80,20 +98,45 @@ saveFeatureBtn.addEventListener('click', () => {
             break;
         }
 
-        let innerRow2 = document.createElement('tr');
-        let innerTd21 = document.createElement('td');
-        let innerTd22 = document.createElement('td');
-        innerTd21.appendChild(document.createTextNode(clean(valueField.value)));
-        innerTd22.appendChild(document.createTextNode(clean(priceField.value)));
-        innerRow2.appendChild(innerTd21);
-        innerRow2.appendChild(innerTd22);
-        tableBody2.appendChild(innerRow2);
+        const innerRow2x = document.createElement('tr');
+        const innerTd2x1 = document.createElement('td');
+        const innerTd2x2 = document.createElement('td');
+        innerTd2x1.appendChild(document.createTextNode(clean(valueField.value)));
+        innerTd2x2.appendChild(document.createTextNode(clean(priceField.value)));
+        innerRow2x.appendChild(innerTd2x1);
+        innerRow2x.appendChild(innerTd2x2);
+        tableBody2.appendChild(innerRow2x);
     }
 
     if (formValid) {
-        td1.appendChild(document.createTextNode(nameField.value));
-        td1.appendChild(editBtn);
+        const checkvalue = (isRequired.checked) ? 'Yes' : 'No';
+        td11.appendChild(document.createTextNode(nameField.value));
+        td12.appendChild(editBtn);
+        td12.appendChild(delBtn);
+        td13.appendChild(document.createTextNode('Answer Type:'));
+        td14.appendChild(document.createTextNode(answerType.value));
+        td15.appendChild(document.createTextNode('Required:'));
+        td16.appendChild(document.createTextNode(checkvalue));
+        td11.setAttribute('class', 'fw-bold');
+
+        const row11 = document.createElement('tr');
+        const row12 = document.createElement('tr');
+        const row13 = document.createElement('tr');
+        row11.appendChild(td11);
+        row11.appendChild(td12);
+        row12.appendChild(td13);
+        row12.appendChild(td14);
+        row13.appendChild(td15);
+        row13.appendChild(td16);
+
+        tableBody1.appendChild(row11);
+        tableBody1.appendChild(row12);
+        tableBody1.appendChild(row13);
+        innerTable1.appendChild(tableBody1);
+
+        td1.appendChild(innerTable1);
         td2.appendChild(innerTable2);
+
         tr.appendChild(td1);
         tr.appendChild(td2);
 
@@ -144,11 +187,13 @@ function createLi() {
     li.appendChild(inputValue);
     li.appendChild(inputPrice);
     li.appendChild(deleteBtn);
-    AddDeleteFn(deleteBtn);
+    AddDeleteLiFn(deleteBtn);
     return li;
 }
 
 function clearFields() {
+    isRequired.checked = false;
+    answerType.selectedIndex = 0;
     featureModal.querySelector('[name="feature-name"]').value = '';
     featuresList.querySelectorAll('[name="feature-value"]').forEach(field => {
         field.value = '';
@@ -160,7 +205,7 @@ function clearFields() {
 }
 
 // delete functionality
-function AddDeleteFn(deleteBtn) {
+function AddDeleteLiFn(deleteBtn) {
     deleteBtn.addEventListener('click', () => {
         if (featuresList.firstElementChild !== featuresList.lastElementChild) {
             featuresList.removeChild(deleteBtn.parentElement);
@@ -168,17 +213,37 @@ function AddDeleteFn(deleteBtn) {
     });
 }
 
+// delete functionality
+function AddDeleteFeatureFn(delBtn) {
+    delBtn.addEventListener('click', () => {
+        const row1x = delBtn.parentElement.parentElement;
+        const innerTable1 = row1x.parentElement.parentElement;
+        const tr = innerTable1.parentElement.parentElement;
+        features.removeChild(tr);
+    });
+}
+
 // edit functionality
 function AddEditFn(editBtn) {
     editBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        featureModal.querySelector('[name="feature-name"]').value = editBtn.previousSibling.textContent;
-        innerTableBody = editBtn.parentElement.nextElementSibling.querySelector('tbody');
+        const featureName = editBtn.parentElement.previousSibling.textContent;
+        featureModal.querySelector('[name="feature-name"]').value = featureName;
 
-        for (let index = 0; index < innerTableBody.childElementCount; index++) {
-            const row = innerTableBody.children[index];
-            const value = row.firstElementChild.textContent;            
-            const price = row.lastElementChild.textContent;
+        const row11 = editBtn.parentElement.parentElement;
+        const row12 = row11.nextElementSibling;
+        const row13 = row12.nextElementSibling;
+
+        answerType.value = row12.lastElementChild.textContent;
+        isRequired.checked = (row13.lastElementChild.textContent == 'Yes') ? true : false;
+
+        const editBtnTable = row11.parentElement.parentElement;
+        const tableBody2 = editBtnTable.parentElement.nextElementSibling.querySelector('tbody');
+
+        for (let index = 0; index < tableBody2.childElementCount; index++) {
+            const row2x = tableBody2.children[index];
+            const value = row2x.firstElementChild.textContent;            
+            const price = row2x.lastElementChild.textContent;
 
             let li = null;
             
@@ -195,7 +260,7 @@ function AddEditFn(editBtn) {
         document.querySelector('[data-bs-toggle="modal"]').click();
         rowIndex = Array.prototype.indexOf.call(
             features.children, 
-            editBtn.parentElement.parentElement
+            editBtnTable.parentElement.parentElement
         );
         saveFeatureBtn.setAttribute('data-edit-index', rowIndex);
     });
