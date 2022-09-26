@@ -49,12 +49,9 @@ saveFeatureBtn.addEventListener('click', () => {
     const tr = document.createElement('tr');
     const td1 = document.createElement('td');
     const td2 = document.createElement('td');
-    // td2.setAttribute('colspan', 2);
     tr.setAttribute('class', 'border-dark');
     td1.setAttribute('class', 'border-dark p-0 w-50');
     td2.setAttribute('class', 'border-dark p-0 w-50');
-    td1.style.padding = '0';
-    td2.style.padding = '0';
 
     const innerTable1 = document.createElement('table');
     const tableBody1 = document.createElement('tbody');
