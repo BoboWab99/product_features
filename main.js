@@ -7,6 +7,10 @@ const answerType = document.getElementById('AnswerType');
 const isRequired = document.getElementById('isRequired');
 
 
+// Access points
+
+// 1. get values from table row
+
 function getFeatureValues(tr) {
     const tableBody1 = tr.firstElementChild.querySelector('tbody');
     const row11 = tableBody1.firstElementChild;
@@ -33,6 +37,107 @@ function getFeatureValues(tr) {
     }
 }
 
+// 2. fill table with feature data
+
+function fillFeatureTableRow(data) {
+    // main row with 2 data cells
+    const tr = document.createElement('tr');
+    const td1 = document.createElement('td');
+    const td2 = document.createElement('td');
+    tr.setAttribute('class', 'border-dark');
+    td1.setAttribute('class', 'border-dark p-0 w-50');
+    td2.setAttribute('class', 'border-dark p-0 w-50');
+
+    // inner table 1: feature, answer type, required, action buttons
+    const innerTable1 = document.createElement('table');
+    const tableBody1 = document.createElement('tbody');
+    innerTable1.appendChild(tableBody1);
+    innerTable1.setAttribute('class', 'table mb-0');
+
+    const td11 = document.createElement('td');
+    const td12 = document.createElement('td');
+    const td13 = document.createElement('td');
+    const td14 = document.createElement('td');
+    const td15 = document.createElement('td');
+    const td16 = document.createElement('td');
+    td11.setAttribute('class', 'fw-bold');
+
+    // edit button
+    const editBtn = document.createElement('a');
+    editBtn.setAttribute('class', 'card-link');
+    editBtn.setAttribute('href', '#');
+    editBtn.appendChild(document.createTextNode('Edit'));
+    AddEditFn(editBtn);
+
+    // delete button
+    const delBtn = document.createElement('a');
+    delBtn.setAttribute('class', 'card-link text-red');
+    delBtn.setAttribute('href', '#');
+    delBtn.appendChild(document.createTextNode('Delete'));
+    AddDeleteFeatureFn(delBtn);
+
+    // fill content: 6 cells
+    const requiredTxt = (data['required']) ? 'Yes' : 'No';
+    td11.appendChild(document.createTextNode(data['featureName']));
+    td12.appendChild(editBtn);
+    td12.appendChild(delBtn);
+    td13.appendChild(document.createTextNode('Answer Type:'));
+    td14.appendChild(document.createTextNode(data['answerType']));
+    td15.appendChild(document.createTextNode('Required:'));
+    td16.appendChild(document.createTextNode(requiredTxt));
+
+    // 3 rows: 2 cells per row
+    const row11 = document.createElement('tr');
+    const row12 = document.createElement('tr');
+    const row13 = document.createElement('tr');
+    row11.appendChild(td11);
+    row11.appendChild(td12);
+    row12.appendChild(td13);
+    row12.appendChild(td14);
+    row13.appendChild(td15);
+    row13.appendChild(td16);
+
+    // append rows to inner table body
+    tableBody1.appendChild(row11);
+    tableBody1.appendChild(row12);
+    tableBody1.appendChild(row13);
+    innerTable1.appendChild(tableBody1);
+
+    // inner table 2: feature values & prices
+    const innerTable2 = document.createElement('table');
+    const tableBody2 = document.createElement('tbody');
+    innerTable2.appendChild(tableBody2);
+    innerTable2.setAttribute('class', 'table mb-0');
+
+    // output value or 3 dashes if no value
+    const clean = (value) => (value.length > 0) ? value : '---';
+
+    data['values'].forEach(feature => {
+        const featureValue = feature['featureValue'];
+        const featurePrice = feature['featurePrice'];
+
+        // create row and fill feature value & price
+        const innerRow2x = document.createElement('tr');
+        const innerTd2x1 = document.createElement('td');
+        const innerTd2x2 = document.createElement('td');
+        innerTd2x1.appendChild(document.createTextNode(clean(featureValue)));
+        innerTd2x2.appendChild(document.createTextNode(clean(featurePrice)));
+        innerRow2x.appendChild(innerTd2x1);
+        innerRow2x.appendChild(innerTd2x2);
+        tableBody2.appendChild(innerRow2x);
+    });
+
+    // append inner tables to main data cells
+    td1.appendChild(innerTable1);
+    td2.appendChild(innerTable2);
+
+    // append main data cells to main table row
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+
+    // append main table row to features table
+    features.appendChild(tr);
+}
 
 window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.btn-close').forEach(btn => {
@@ -164,15 +269,23 @@ saveFeatureBtn.addEventListener('click', () => {
         tr.appendChild(td1);
         tr.appendChild(td2);
 
+        // edit existing feature
         if (saveFeatureBtn.hasAttribute('data-edit-index')) {
             const index = saveFeatureBtn.dataset.editIndex;
             features.removeChild(features.children[index]);
             features.insertBefore(tr, features.children[index]);
             saveFeatureBtn.removeAttribute('data-edit-index');
-        } else {
+        } 
+        // add new feature
+        else {
             features.appendChild(tr);
-            console.log(getFeatureValues(tr));
+            // test get values from row
+            const newFeature = getFeatureValues(tr);
+            console.log(newFeature);
+            // test fill values into table
+            fillFeatureTableRow(newFeature);
         }
+        // close modal
         featureModal.querySelector('[data-bs-dismiss="modal"]').click();
     }
 });
@@ -186,7 +299,7 @@ featureModal.addEventListener('hidden.bs.modal', () => {
 });
 
 
-// create new item
+// modal: create new item
 function createLi() {
     let li = document.createElement('li');
     let inputValue = document.createElement('input');
@@ -216,6 +329,7 @@ function createLi() {
     return li;
 }
 
+// modal: clear input fields
 function clearFields() {
     isRequired.checked = false;
     answerType.selectedIndex = 0;
@@ -229,7 +343,7 @@ function clearFields() {
     });
 }
 
-// delete functionality
+// modal: remove feature functionality
 function AddDeleteLiFn(deleteBtn) {
     deleteBtn.addEventListener('click', () => {
         if (featuresList.firstElementChild !== featuresList.lastElementChild) {
@@ -238,7 +352,7 @@ function AddDeleteLiFn(deleteBtn) {
     });
 }
 
-// delete functionality
+// features table: remove feature functionality
 function AddDeleteFeatureFn(delBtn) {
     delBtn.addEventListener('click', () => {
         const row1x = delBtn.parentElement.parentElement;
@@ -248,7 +362,7 @@ function AddDeleteFeatureFn(delBtn) {
     });
 }
 
-// edit functionality
+// features table: edit functionality
 function AddEditFn(editBtn) {
     editBtn.addEventListener('click', (e) => {
         e.preventDefault();
