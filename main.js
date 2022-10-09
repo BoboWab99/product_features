@@ -1,410 +1,317 @@
-const featureModal = document.getElementById('featureModal');
-const featuresList = document.getElementById('featuresList');
-const saveFeatureBtn = document.getElementById('saveFeature');
-const plusBtn = document.getElementById('valuePlusBtn');
-const features = document.getElementById('features');
-const answerType = document.getElementById('AnswerType');
-const isRequired = document.getElementById('isRequired');
+const featureModal = document.getElementById('featureModal')
+const modalFeaturesList = document.getElementById('featuresList')
+const modalSaveBtn = document.getElementById('saveFeature')
+const modalPlusBtn = document.getElementById('valuePlusBtn')
+const modalFeatureName = document.getElementById('featureName')
+const modalAnswerType = document.getElementById('AnswerType')
+const modalRequired = document.getElementById('isRequired')
 
+const ftModal = document.getElementById('ftModal')
+const ftFeatureName = document.getElementById('ftFeatureName')
+const ftFeaturePrice = document.getElementById('ftFeaturePrice')
+const ftModalLabel = document.getElementById('ftModalLabel')
+const ftFeatureDelBtn = document.getElementById('ftFeatureDel')
+const ftSaveFeatureBtn = document.getElementById('ftSaveFeature')
 
-// Access points
+const ftEdtModal = document.getElementById('ftEdtModal')
+const ftEdtModalLabel = document.getElementById('ftEdtModalLabel')
+const ftEdtfeatureName = document.getElementById('ftEdtfeatureName')
+const ftEdtAnswerType = document.getElementById('ftEdtAnswerType')
+const ftEdtRequired = document.getElementById('ftEdtRequired')
+const ftEdtSaveFeatureBtn = document.getElementById('ftEdtSaveFeature')
 
-// 1. get values from table row
+const listFeatures = document.getElementById('listFeatures')
 
-function getFeatureValues(tr) {
-    const tableBody1 = tr.firstElementChild.querySelector('tbody');
-    const row11 = tableBody1.firstElementChild;
-    const row12 = row11.nextElementSibling;
-    const row13 = row12.nextElementSibling;
+const ftCta = {
+    ADD: 1,
+    EDIT: 2
+}
 
-    const tableBody2 = tr.lastElementChild.querySelector('tbody');
-    let values = [];
-    for (let index = 0; index < tableBody2.childElementCount; index++) {
-        const row2x = tableBody2.children[index];
-        const value = row2x.firstElementChild.textContent;
-        const price = row2x.lastElementChild.textContent;
-        values.push({
-            'featureValue': value,
-            'featurePrice': price
-        });
+// 1. get feature values from features list child
+
+function getFeatureValues(li) {
+    let featureValuesList = li.querySelector('.feature-values')
+    let featureValues = []
+    // Array.from(htmlCollection) = [...htmlCollection]
+    for (let _li of [...featureValuesList.children]) {
+        featureValues.push({
+            'featureValue': _li.querySelector('.feature-value').textContent,
+            'featurePrice': _li.querySelector('.feature-price').textContent
+        })
     }
-
     return {
-        'featureName': row11.firstElementChild.textContent,
-        'answerType': row12.lastElementChild.textContent,
-        'required': (row13.lastElementChild.textContent == 'Yes') ? true : false,
-        'values': values
+        'featureName': li.querySelector('.feature-name').textContent,
+        'answerType': li.querySelector('.feature-answer-type').textContent,
+        'required': li.querySelector('.feature-is-required').textContent,
+        'values': featureValues
     }
 }
 
-// 2. fill table with feature data
-
-function fillFeatureTableRow(data) {
-    // main row with 2 data cells
-    const tr = document.createElement('tr');
-    const td1 = document.createElement('td');
-    const td2 = document.createElement('td');
-    tr.setAttribute('class', 'border-dark');
-    td1.setAttribute('class', 'border-dark p-0 w-50');
-    td2.setAttribute('class', 'border-dark p-0 w-50');
-
-    // inner table 1: feature, answer type, required, action buttons
-    const innerTable1 = document.createElement('table');
-    const tableBody1 = document.createElement('tbody');
-    innerTable1.appendChild(tableBody1);
-    innerTable1.setAttribute('class', 'table mb-0');
-
-    const td11 = document.createElement('td');
-    const td12 = document.createElement('td');
-    const td13 = document.createElement('td');
-    const td14 = document.createElement('td');
-    const td15 = document.createElement('td');
-    const td16 = document.createElement('td');
-    td11.setAttribute('class', 'fw-bold');
-
-    // edit button
-    const editBtn = document.createElement('a');
-    editBtn.setAttribute('class', 'card-link');
-    editBtn.setAttribute('href', '#');
-    editBtn.appendChild(document.createTextNode('Edit'));
-    AddEditFn(editBtn);
-
-    // delete button
-    const delBtn = document.createElement('a');
-    delBtn.setAttribute('class', 'card-link text-red');
-    delBtn.setAttribute('href', '#');
-    delBtn.appendChild(document.createTextNode('Delete'));
-    AddDeleteFeatureFn(delBtn);
-
-    // fill content: 6 cells
-    const requiredTxt = (data['required']) ? 'Yes' : 'No';
-    td11.appendChild(document.createTextNode(data['featureName']));
-    td12.appendChild(editBtn);
-    td12.appendChild(delBtn);
-    td13.appendChild(document.createTextNode('Answer Type:'));
-    td14.appendChild(document.createTextNode(data['answerType']));
-    td15.appendChild(document.createTextNode('Required:'));
-    td16.appendChild(document.createTextNode(requiredTxt));
-
-    // 3 rows: 2 cells per row
-    const row11 = document.createElement('tr');
-    const row12 = document.createElement('tr');
-    const row13 = document.createElement('tr');
-    row11.appendChild(td11);
-    row11.appendChild(td12);
-    row12.appendChild(td13);
-    row12.appendChild(td14);
-    row13.appendChild(td15);
-    row13.appendChild(td16);
-
-    // append rows to inner table body
-    tableBody1.appendChild(row11);
-    tableBody1.appendChild(row12);
-    tableBody1.appendChild(row13);
-    innerTable1.appendChild(tableBody1);
-
-    // inner table 2: feature values & prices
-    const innerTable2 = document.createElement('table');
-    const tableBody2 = document.createElement('tbody');
-    innerTable2.appendChild(tableBody2);
-    innerTable2.setAttribute('class', 'table mb-0');
-
-    // output value or 3 dashes if no value
-    const clean = (value) => (value.length > 0) ? value : '---';
-
-    data['values'].forEach(feature => {
-        const featureValue = feature['featureValue'];
-        const featurePrice = feature['featurePrice'];
-
-        // create row and fill feature value & price
-        const innerRow2x = document.createElement('tr');
-        const innerTd2x1 = document.createElement('td');
-        const innerTd2x2 = document.createElement('td');
-        innerTd2x1.appendChild(document.createTextNode(clean(featureValue)));
-        innerTd2x2.appendChild(document.createTextNode(clean(featurePrice)));
-        innerRow2x.appendChild(innerTd2x1);
-        innerRow2x.appendChild(innerTd2x2);
-        tableBody2.appendChild(innerRow2x);
-    });
-
-    // append inner tables to main data cells
-    td1.appendChild(innerTable1);
-    td2.appendChild(innerTable2);
-
-    // append main data cells to main table row
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-
-    // append main table row to features table
-    features.appendChild(tr);
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.btn-close').forEach(btn => {
-        AddDeleteLiFn(btn);
-    });
-});
-
-plusBtn.addEventListener('click', () => {
-    let lastInput = featuresList.lastElementChild.firstElementChild;
+modalPlusBtn.addEventListener('click', () => {
+    let lastInput = modalFeaturesList.lastElementChild.querySelector('input[name="feature-value"]')
     if (lastInput.value == '') {
-        lastInput.focus();
-        return;
+        lastInput.focus()
+        return
     }
-    let newLi = createLi();
-    featuresList.append(newLi);
-    newLi.firstElementChild.focus();
-});
+    let newLi = modalCreateLi()
+    modalFeaturesList.append(newLi)
+    newLi.querySelector('input[name="feature-value"]').focus()
+})
 
-featuresList.addEventListener('keydown', (e) => {
-    let keyCode = e.key || e.code;
-    if (keyCode !== 'Enter') return;
-    if (e.target.value == '') return;
+modalFeaturesList.addEventListener('keydown', (e) => {
+    let keyCode = e.key || e.code
+    if (keyCode !== 'Enter') return
+    if (e.target.value == '') return
 
-    let lastLi = featuresList.lastElementChild;
-    let newLi = createLi();
+    let lastLi = modalFeaturesList.lastElementChild
+    let newLi = modalCreateLi()
 
-    if (lastLi.contains(e.target)) featuresList.append(newLi);
-    else insertAfter(newLi, e.target.parentElement);
-    newLi.firstElementChild.focus();
-});
+    if (lastLi.contains(e.target)) modalFeaturesList.append(newLi)
+    else insertAfter(newLi, e.target.closest('li'))
+    newLi.querySelector('input[name="feature-value"]').focus()
+})
 
-saveFeatureBtn.addEventListener('click', () => {
-    let formValid = true;
-    const nameField = featureModal.querySelector('[name="feature-name"]');
-    if(nameField.value.length < 1) {
-        nameField.focus();
-        formValid = false;
-        return;
+modalSaveBtn.addEventListener('click', () => {
+    // const modalFeatureName = featureModal.querySelector('input[name="feature-name"]')
+    if(modalFeatureName.value == '') {
+        modalFeatureName.focus()
+        return
     }
+    let featureValues = []
+    const clean = (value) => (value.length > 0) ? value : '---'
 
-    const tr = document.createElement('tr');
-    const td1 = document.createElement('td');
-    const td2 = document.createElement('td');
-    tr.setAttribute('class', 'border-dark');
-    td1.setAttribute('class', 'border-dark p-0 w-50');
-    td2.setAttribute('class', 'border-dark p-0 w-50');
-
-    const innerTable1 = document.createElement('table');
-    const tableBody1 = document.createElement('tbody');
-    innerTable1.appendChild(tableBody1);
-    innerTable1.setAttribute('class', 'table mb-0');
-
-    const td11 = document.createElement('td');
-    const td12 = document.createElement('td');
-    const td13 = document.createElement('td');
-    const td14 = document.createElement('td');
-    const td15 = document.createElement('td');
-    const td16 = document.createElement('td');
-
-    const editBtn = document.createElement('a');
-    editBtn.setAttribute('class', 'card-link');
-    editBtn.setAttribute('href', '#');
-    editBtn.appendChild(document.createTextNode('Edit'));
-    AddEditFn(editBtn);
-    
-    const delBtn = document.createElement('a');
-    delBtn.setAttribute('class', 'card-link text-red');
-    delBtn.setAttribute('href', '#');
-    delBtn.appendChild(document.createTextNode('Delete'));
-    AddDeleteFeatureFn(delBtn);
-
-    const innerTable2 = document.createElement('table');
-    const tableBody2 = document.createElement('tbody');
-    innerTable2.appendChild(tableBody2);
-    innerTable2.setAttribute('class', 'table mb-0');
-
-    const clean = (value) => (value.length > 0) ? value : '---';
-
-    for (let index = 0; index < featuresList.childElementCount; index++) {
-        const li = featuresList.children[index];
-        const valueField = li.querySelector('[name="feature-value"]');
-        const priceField = li.querySelector('[name="feature-price"]');
-
-        if (valueField.value.length < 1) {
-            valueField.focus();
-            formValid = false;
-            break;
+    for (let li of [...modalFeaturesList.children]) {
+        const valueField = li.querySelector('input[name="feature-value"]')
+        const priceField = li.querySelector('input[name="feature-price"]')
+        if (valueField.value == '') {
+            valueField.focus()
+            return
         }
-
-        const innerRow2x = document.createElement('tr');
-        const innerTd2x1 = document.createElement('td');
-        const innerTd2x2 = document.createElement('td');
-        innerTd2x1.appendChild(document.createTextNode(clean(valueField.value)));
-        innerTd2x2.appendChild(document.createTextNode(clean(priceField.value)));
-        innerRow2x.appendChild(innerTd2x1);
-        innerRow2x.appendChild(innerTd2x2);
-        tableBody2.appendChild(innerRow2x);
+        featureValues.push({
+            'featureValue': clean(valueField.value),
+            'featurePrice': clean(priceField.value)
+        })
     }
-
-    if (formValid) {
-        const checkvalue = (isRequired.checked) ? 'Yes' : 'No';
-        td11.appendChild(document.createTextNode(nameField.value));
-        td12.appendChild(editBtn);
-        td12.appendChild(delBtn);
-        td13.appendChild(document.createTextNode('Answer Type:'));
-        td14.appendChild(document.createTextNode(answerType.value));
-        td15.appendChild(document.createTextNode('Required:'));
-        td16.appendChild(document.createTextNode(checkvalue));
-        td11.setAttribute('class', 'fw-bold');
-
-        const row11 = document.createElement('tr');
-        const row12 = document.createElement('tr');
-        const row13 = document.createElement('tr');
-        row11.appendChild(td11);
-        row11.appendChild(td12);
-        row12.appendChild(td13);
-        row12.appendChild(td14);
-        row13.appendChild(td15);
-        row13.appendChild(td16);
-
-        tableBody1.appendChild(row11);
-        tableBody1.appendChild(row12);
-        tableBody1.appendChild(row13);
-        innerTable1.appendChild(tableBody1);
-
-        td1.appendChild(innerTable1);
-        td2.appendChild(innerTable2);
-
-        tr.appendChild(td1);
-        tr.appendChild(td2);
-
-        // edit existing feature
-        if (saveFeatureBtn.hasAttribute('data-edit-index')) {
-            const index = saveFeatureBtn.dataset.editIndex;
-            features.removeChild(features.children[index]);
-            features.insertBefore(tr, features.children[index]);
-            saveFeatureBtn.removeAttribute('data-edit-index');
-        } 
-        // add new feature
-        else {
-            features.appendChild(tr);
-            // test get values from row
-            const newFeature = getFeatureValues(tr);
-            console.log(newFeature);
-            // test fill values into table
-            fillFeatureTableRow(newFeature);
-        }
-        // close modal
-        featureModal.querySelector('[data-bs-dismiss="modal"]').click();
-    }
-});
+    data = {}
+    data['featureName'] = modalFeatureName.value
+    data['answerType'] = modalAnswerType.value
+    data['required'] = (modalRequired.checked) ? 'Yes' : 'No'
+    data['values'] = featureValues
+    addFeatureUI(data)
+    // close modal
+    featureModal.querySelector('[data-bs-dismiss="modal"]').click()
+})
 
 featureModal.addEventListener('shown.bs.modal', () => {
-    featureModal.querySelector('input').focus();
-});
+    modalFeatureName.focus()
+})
 
 featureModal.addEventListener('hidden.bs.modal', () => {
-    clearFields();
-});
+    clearFields()
+})
+
+ftModal.addEventListener('hidden.bs.modal', () => {
+    ftFeatureName.value = ''
+    ftFeaturePrice.value = ''
+    ftModalLabel.innerHTML = ''
+    ftFeatureDelBtn.hidden = true
+})
+
+ftSaveFeatureBtn.addEventListener('click', () => {
+    if (ftFeatureName.value == '') return
+
+    const cta = ftSaveFeatureBtn.dataset.cta
+    const ftIdx = ftSaveFeatureBtn.dataset.ftIdx
+    const ftValues = listFeatures.children.item(ftIdx).querySelector('.feature-values')
+
+    if (cta == ftCta.ADD) {
+        let li = createFeatureValueLi({
+            'featureValue': ftFeatureName.value,
+            'featurePrice': ftFeaturePrice.value
+        })
+        ftValues.appendChild(li)
+    }
+    else if (cta == ftCta.EDIT) {
+        const ft = ftValues.children.item(ftSaveFeatureBtn.dataset.ftTargetIdx)
+        ft.querySelector('.feature-value').innerHTML = ftFeatureName.value
+        ft.querySelector('.feature-price').innerHTML = ftFeaturePrice.value
+        ftSaveFeatureBtn.removeAttribute('onclick')
+        ftSaveFeatureBtn.removeAttribute('data-ft-target-idx')
+    }
+    ftSaveFeatureBtn.removeAttribute('data-ft-idx')
+    ftModal.querySelector('[data-bs-dismiss="modal"]').click()
+})
+
+ftEdtSaveFeatureBtn.addEventListener('click', () => {
+    const ft = listFeatures.children.item(ftEdtSaveFeatureBtn.dataset.ftIdx)
+    ft.querySelector('.feature-name').innerHTML = ftEdtfeatureName.value
+    ft.querySelector('.feature-answer-type').innerHTML = ftEdtAnswerType.value
+    ft.querySelector('.feature-is-required').innerHTML = (ftEdtRequired.checked) ? 'Yes' : 'No'
+    ftEdtModal.querySelector('[data-bs-dismiss="modal"]').click()
+})
 
 
 // modal: create new item
-function createLi() {
-    let li = document.createElement('li');
-    let inputValue = document.createElement('input');
-    let inputPrice = document.createElement('input');
-    let deleteBtn = document.createElement('button');
+function modalCreateLi() {
+    let html = `
+        <input type="text" name="feature-value" class="form-control" placeholder="Value">
+        <input type="number" name="feature-price" class="form-control" placeholder="Price" min="0">
+        <button type="button" class="btn-close" title="Remove" onclick="removeLi(this.closest('li'))"></button>`
+    let li = document.createElement('li')
+    li.setAttribute('class', 'd-flex align-items-center gap-sm position-relative mb-2')
+    li.innerHTML = html
+    return li
+}
 
-    li.setAttribute('class', 'line-focus d-flex position-relative mb-2')
+function modalRemoveLi(li) {
+    if (modalFeaturesList.childElementCount > 1) {
+        modalFeaturesList.removeChild(li)
+    }
+}
 
-    inputValue.setAttribute('type', 'text');
-    inputValue.setAttribute('name', 'feature-value');
-    inputValue.setAttribute('class', 'form-control');
-    inputValue.setAttribute('placeholder', 'Value');
-    
-    inputPrice.setAttribute('type', 'number');
-    inputPrice.setAttribute('min', 0);
-    inputPrice.setAttribute('name', 'feature-price');
-    inputPrice.setAttribute('class', 'form-control');
-    inputPrice.setAttribute('placeholder', 'Price');
+function removeFeature(elm) {
+    listFeatures.removeChild(elm)
+}
 
-    deleteBtn.setAttribute('class', 'btn-close');
-    deleteBtn.setAttribute('title', 'Remove');
+function ftDelete(ftIndex, ftTargetIndex) {
+    const ft = listFeatures.children.item(ftIndex)
+    const ftValues = ft.querySelector('.feature-values')
+    ftValues.removeChild(ftValues.children.item(ftTargetIndex))
+    ftModal.querySelector('[data-bs-dismiss="modal"]').click()
+}
 
-    li.appendChild(inputValue);
-    li.appendChild(inputPrice);
-    li.appendChild(deleteBtn);
-    AddDeleteLiFn(deleteBtn);
-    return li;
+function editFeature(elm) {
+    const ftName = elm.querySelector('.feature-name').textContent
+    const ftrequired = elm.querySelector('.feature-is-required').textContent
+    const ftAnswerType = elm.querySelector('.feature-answer-type').textContent
+
+    ftEdtModalLabel.innerHTML = '[Feature] '
+    ftEdtModalLabel.innerHTML += elm.querySelector('.feature-name').textContent
+    ftEdtModalLabel.innerHTML += ' - Edit'
+
+    ftEdtfeatureName.value = ftName
+    ftEdtAnswerType.value = ftAnswerType
+    ftEdtRequired.checked = (ftrequired == 'Yes') ? true : false
+    ftEdtSaveFeatureBtn.setAttribute(
+        'data-ft-idx',
+        Array.prototype.indexOf.call(listFeatures.children, elm)
+    )
+}
+
+function modifyFt(target, action) {
+    let ft = null
+    let xtraTitle = ''
+
+    if (action == ftCta.EDIT) {
+        const ftValue = target.querySelector('.feature-value').textContent
+        const ftPrice = target.querySelector('.feature-price').textContent
+        ftFeatureName.value = ftValue
+        ftFeaturePrice.value = ftPrice
+        xtraTitle = ` - Edit '${ftValue}'`
+        ft = target.closest('.list-features-item')
+        const ftTargetIdx = Array.prototype.indexOf.call(target.closest('.feature-values').children, target)
+        ftSaveFeatureBtn.setAttribute('data-ft-target-idx', ftTargetIdx)
+        ftFeatureDelBtn.hidden = false
+        const _ftIdx = Array.prototype.indexOf.call(listFeatures.children, ft)
+        ftFeatureDelBtn.setAttribute('onclick', `ftDelete(${_ftIdx}, ${ftTargetIdx})`)
+    }
+    else if (action == ftCta.ADD) {
+        ft = target
+        xtraTitle = ` - New value`
+    }
+    ftModalLabel.innerHTML = '[Feature] '
+    ftModalLabel.innerHTML += ft.querySelector('.feature-name').textContent
+    ftModalLabel.innerHTML += xtraTitle
+
+    const ftIdx = Array.prototype.indexOf.call(listFeatures.children, ft)
+    ftSaveFeatureBtn.setAttribute('data-ft-idx', ftIdx)
+    ftSaveFeatureBtn.setAttribute('data-cta', action)
+}
+
+function createFeatureValueLi(data) {
+    let html = `
+    <span class="flex-shrink-0 flex-grow-1 me-1 px-2 py-1">
+        <span class="feature-value">${data['featureValue']}</span>
+        <span class="feature-price text-muted">${data['featurePrice']}</span>
+    </span>
+    <div class="feature-options border-start ps-1 flex-shrink-0 flex-grow-1">
+        <a role="button" data-action="edit" class="d-block px-2 py-1" href="#" data-bs-toggle="modal" data-bs-target="#ftModal" onclick="modifyFt(this.closest('.feature-values-item'), ${ftCta.EDIT})">
+            <i class="fa-solid fa-edit"></i>
+        </a>
+    </div>`
+    let li = document.createElement('li')
+    li.setAttribute('class', 'feature-values-item border bg-light rounded-pill d-flex align-items-center p-1')
+    li.innerHTML = html
+    return li
+}
+
+// 2. fill UI with feature data
+
+function addFeatureUI(data) {
+    let htmlValues = ''
+    data['values'].forEach(feature => {
+        htmlValues += `
+        <li class="feature-values-item border bg-light rounded-pill d-flex align-items-center p-1">
+            <span class="flex-shrink-0 flex-grow-1 me-1 px-2 py-1">
+                <span class="feature-value">${feature['featureValue']}</span>
+                <span class="feature-price text-muted">${feature['featurePrice']}</span>
+            </span>
+            <div class="feature-options border-start ps-1 flex-shrink-0 flex-grow-1">
+                <a role="button" data-action="edit" class="d-block px-2 py-1" href="#" data-bs-toggle="modal" data-bs-target="#ftModal" onclick="modifyFt(this.closest('.feature-values-item'), ${ftCta.EDIT})">
+                    <i class="fa-solid fa-edit"></i>
+                </a>
+            </div>
+        </li>`
+    })
+    let html = `
+    <div class="card-body d-flex align-items-center gap-sm py-0">
+        <p class="feature-name py-3 m-0 fw-bold">${data['featureName']}</p>
+        <button type="button" class="btn btn-sm btn-outline-success border-0 fs-4" title="Add feature" data-bs-toggle="modal" data-bs-target="#ftModal" onclick="modifyFt(this.closest('.list-features-item'), ${ftCta.ADD})">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+        <ul class="feature-values d-flex gap-sm overflow-auto-x py-3">${htmlValues}</ul>
+    </div>
+    <div class="card-footer bg-white d-flex justify-content-between gap-md">
+        <div>
+            <p class="m-0">
+                <span class="text-muted">Required:</span>
+                <span class="feature-is-required">${data['required']}</span>
+            </p>
+            <p class="m-0">
+                <span class="text-muted">Answer type:</span>
+                <span class="feature-answer-type">${data['answerType']}</span>
+            </p>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle no-arrow" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                <li><a class="dropdown-item text-primary" href="#" data-bs-toggle="modal" data-bs-target="#ftEdtModal" onclick="editFeature(this.closest('.list-features-item'))">Edit feature</a></li>
+                <li><a class="dropdown-item text-danger" href="#" onclick="removeFeature(this.closest('.list-features-item'))">Remove</a></li>
+            </ul>
+        </div>
+    </div>`
+    let li = document.createElement('li')
+    li.setAttribute('class', 'list-features-item card shadow-sm mb-2')
+    li.innerHTML = html
+    listFeatures.appendChild(li)
 }
 
 // modal: clear input fields
 function clearFields() {
-    isRequired.checked = false;
-    answerType.selectedIndex = 0;
-    featureModal.querySelector('[name="feature-name"]').value = '';
-    featuresList.querySelectorAll('[name="feature-value"]').forEach(field => {
-        field.value = '';
-        field.nextElementSibling.value = '';
-        if (featuresList.childElementCount > 1) {
-            featuresList.removeChild(field.parentElement);
+    modalRequired.checked = false
+    modalAnswerType.selectedIndex = 0
+    modalFeatureName.value = ''
+    modalFeaturesList.querySelectorAll('input[name="feature-value"]').forEach(field => {
+        field.value = ''
+        field.nextElementSibling.value = ''
+        if (modalFeaturesList.childElementCount > 1) {
+            modalFeaturesList.removeChild(field.parentElement)
         }
-    });
-}
-
-// modal: remove feature functionality
-function AddDeleteLiFn(deleteBtn) {
-    deleteBtn.addEventListener('click', () => {
-        if (featuresList.firstElementChild !== featuresList.lastElementChild) {
-            featuresList.removeChild(deleteBtn.parentElement);
-        }
-    });
-}
-
-// features table: remove feature functionality
-function AddDeleteFeatureFn(delBtn) {
-    delBtn.addEventListener('click', () => {
-        const row1x = delBtn.parentElement.parentElement;
-        const innerTable1 = row1x.parentElement.parentElement;
-        const tr = innerTable1.parentElement.parentElement;
-        features.removeChild(tr);
-    });
-}
-
-// features table: edit functionality
-function AddEditFn(editBtn) {
-    editBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const featureName = editBtn.parentElement.previousSibling.textContent;
-        featureModal.querySelector('[name="feature-name"]').value = featureName;
-
-        const row11 = editBtn.parentElement.parentElement;
-        const row12 = row11.nextElementSibling;
-        const row13 = row12.nextElementSibling;
-
-        answerType.value = row12.lastElementChild.textContent;
-        isRequired.checked = (row13.lastElementChild.textContent == 'Yes') ? true : false;
-
-        const editBtnTable = row11.parentElement.parentElement;
-        const tableBody2 = editBtnTable.parentElement.nextElementSibling.querySelector('tbody');
-
-        for (let index = 0; index < tableBody2.childElementCount; index++) {
-            const row2x = tableBody2.children[index];
-            const value = row2x.firstElementChild.textContent;            
-            const price = row2x.lastElementChild.textContent;
-
-            let li = null;
-            
-            if(index == 0) {
-                li = featuresList.firstElementChild;
-            } else {
-                li = createLi();
-                featuresList.appendChild(li);
-            }
-
-            li.querySelector('[name="feature-value"]').value = value;
-            li.querySelector('[name="feature-price"]').value = price;
-        }
-        document.querySelector('[data-bs-toggle="modal"]').click();
-        rowIndex = Array.prototype.indexOf.call(
-            features.children, 
-            editBtnTable.parentElement.parentElement
-        );
-        saveFeatureBtn.setAttribute('data-edit-index', rowIndex);
-    });
+    })
 }
 
 function insertAfter(newElement, existingElement) {
-    existingElement.parentElement.insertBefore(newElement, existingElement.nextElementSibling);
+    existingElement.parentElement.insertBefore(newElement, existingElement.nextElementSibling)
 }

@@ -4,14 +4,22 @@ ul {
     padding: 0;
 }
 
-.list-features li {
+.gap-sm {
     gap: 0.5rem;
-    padding-right: 2rem;
 }
 
-.list-features li>button {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
+.gap-md {
+    gap: 1rem;
+}
+
+.gap-lg {
+    gap: 2rem;
+}
+
+.overflow-auto-x {
+    overflow-x: auto;
+}
+
+.dropdown-toggle.no-arrow::after {
+    display: none !important;
 }

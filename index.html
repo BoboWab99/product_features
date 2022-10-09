@@ -10,10 +10,9 @@
         integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 
     <link rel="stylesheet" href="main.css">
-
 </head>
 
-<body class="p-5">
+<body class="py-5">
     <div class="container">
         <form action="#">
             <h4 class="mb-5">New product</h4>
@@ -29,15 +28,14 @@
                 <label for="deliveryQty">Delivery Quantity</label>
                 <input class="form-control" type="text" id="productName" name="deliveryQty">
             </div>
-            <div class="form-field mb-3">
+            <div class="form-field mb-4">
                 <label for="deliveryPrice">Delivery Price</label>
                 <input class="form-control" type="text" id="productName" name="deliveryPrice">
             </div>
-            <div class="features">
-                <h5 class="mb-4">Product Features</h5>
-                <table class="table table-bordered"><tbody id="features"></tbody></table>
-            </div>
-            <button type="button" class="btn btn-outline-success border-0" data-bs-toggle="modal" data-bs-target="#featureModal">
+            <h5 class="mb-4">Product Features</h5>
+            <ul class="list-features" id="listFeatures"></ul>
+            <button type="button" class="btn btn-outline-success border-0" data-bs-toggle="modal"
+                data-bs-target="#featureModal">
                 <i class="fa-solid fa-plus"></i>
                 <span class="ms-2">Add feature</span>
             </button>
@@ -45,7 +43,8 @@
     </div>
 
 
-    <div class="modal fade" id="featureModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="featureModalLabel" aria-hidden="true">
+    <div class="modal fade" id="featureModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="featureModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen-sm-down">
             <div class="modal-content">
                 <div class="modal-header border-0">
@@ -71,10 +70,10 @@
 
                     <h6 class="mt-4 mb-3">Feature values & Prices</h6>
                     <ul class="list-features" id="featuresList">
-                        <li class="line-focus d-flex position-relative mb-2">
-                            <input type="text" name="feature-value" class="form-control" placeholder="Value 1">
+                        <li class="d-flex align-items-center gap-sm position-relative mb-2">
+                            <input type="text" name="feature-value" class="form-control" placeholder="Value">
                             <input type="number" name="feature-price" class="form-control" placeholder="Price" min="0">
-                            <button type="button" class="btn-close" title="Remove"></button>
+                            <button type="button" class="btn-close" title="Remove" onclick="removeLi(this.closest('li'))"></button>
                         </li>
                     </ul>
                     <div class="text-center">
@@ -85,8 +84,70 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-light">
-                    <button type="button" class="m-0 btn btn-outline-dark border-0 me-2" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="m-0 btn btn-outline-dark border-0 me-2"
+                        data-bs-dismiss="modal">Close</button>
                     <button type="button" class="m-0 btn btn-primary" id="saveFeature">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+    
+    <div class="modal fade" id="ftModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="ftModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="ftModalLabel">...</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-field mb-3">
+                        <label for="ftFeatureName">Name:</label>
+                        <input class="form-control" type="text" id="ftFeatureName" name="feature-name">
+                    </div>
+                    <div class="form-field mb-3">
+                        <label for="ftFeaturePrice">Price:</label>
+                        <input class="form-control" type="number" id="ftFeaturePrice" name="feature-name">
+                    </div>
+                    <a href="#" class="text-danger" id="ftFeatureDel" hidden>Delete this value</a>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="m-0 btn btn-outline-dark border-0 me-2"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="m-0 btn btn-primary" id="ftSaveFeature">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ftEdtModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="ftEdtModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="ftEdtModalLabel">...</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-field mb-3">
+                        <label for="ftEdtfeatureName">Name</label>
+                        <input class="form-control" type="text" id="ftEdtfeatureName" name="feature-name">
+                    </div>
+                    <div class="form-field mb-3">
+                        <label for="ftEdtAnswerType">Answer Type:</label>
+                        <select name="" id="ftEdtAnswerType" class="form-select">
+                            <option value="Free Text">Free Text</option>
+                            <option value="Multiple Choice">Multiple Choice</option>
+                            <option value="Single Choice">Single Choice</option>
+                        </select>
+                    </div>
+                    <div class="form-field form-check mb-3">
+                        <label for="ftEdtRequired">Is required</label>
+                        <input type="checkbox" class="form-check-input" name="" id="ftEdtRequired">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="m-0 btn btn-outline-dark border-0 me-2"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="m-0 btn btn-primary" id="ftEdtSaveFeature">Save</button>
                 </div>
             </div>
         </div>
