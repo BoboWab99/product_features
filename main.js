@@ -1,10 +1,10 @@
 const featureModal = document.getElementById('featureModal')
-const modalFeaturesList = document.getElementById('featuresList')
-const modalSaveBtn = document.getElementById('saveFeature')
-const modalPlusBtn = document.getElementById('valuePlusBtn')
-const modalFeatureName = document.getElementById('featureName')
-const modalAnswerType = document.getElementById('AnswerType')
-const modalRequired = document.getElementById('isRequired')
+const modalFeaturesList = document.getElementById('modalFeaturesList')
+const modalSaveBtn = document.getElementById('modalSaveFeature')
+const modalPlusBtn = document.getElementById('modalValuePlusBtn')
+const modalFeatureName = document.getElementById('modalFeatureName')
+const modalAnswerType = document.getElementById('modalAnswerType')
+const modalRequired = document.getElementById('modalRequired')
 
 const ftModal = document.getElementById('ftModal')
 const ftFeatureName = document.getElementById('ftFeatureName')
@@ -72,7 +72,6 @@ modalFeaturesList.addEventListener('keydown', (e) => {
 })
 
 modalSaveBtn.addEventListener('click', () => {
-    // const modalFeatureName = featureModal.querySelector('input[name="feature-name"]')
     if(modalFeatureName.value == '') {
         modalFeatureName.focus()
         return
@@ -230,17 +229,17 @@ function modifyFt(target, action) {
 
 function createFeatureValueLi(data) {
     let html = `
-    <span class="flex-shrink-0 flex-grow-1 me-1 px-2 py-1">
+    <span class="flex-shrink-0 me-1 px-2 py-1">
         <span class="feature-value">${data['featureValue']}</span>
         <span class="feature-price text-muted">${data['featurePrice']}</span>
     </span>
-    <div class="feature-options border-start ps-1 flex-shrink-0 flex-grow-1">
-        <a role="button" data-action="edit" class="d-block px-2 py-1" href="#" data-bs-toggle="modal" data-bs-target="#ftModal" onclick="modifyFt(this.closest('.feature-values-item'), ${ftCta.EDIT})">
+    <div class="feature-options border-start ps-1 flex-shrink-0">
+        <a role="button" class="d-block px-2 py-1" href="#" data-bs-toggle="modal" data-bs-target="#ftModal" onclick="modifyFt(this.closest('.feature-values-item'), ${ftCta.EDIT})">
             <i class="fa-solid fa-edit"></i>
         </a>
     </div>`
     let li = document.createElement('li')
-    li.setAttribute('class', 'feature-values-item border bg-light rounded-pill d-flex align-items-center p-1')
+    li.setAttribute('class', 'feature-values-item flex-shrink-0 border bg-light rounded-pill d-flex align-items-center p-1')
     li.innerHTML = html
     return li
 }
@@ -251,13 +250,13 @@ function addFeatureUI(data) {
     let htmlValues = ''
     data['values'].forEach(feature => {
         htmlValues += `
-        <li class="feature-values-item border bg-light rounded-pill d-flex align-items-center p-1">
-            <span class="flex-shrink-0 flex-grow-1 me-1 px-2 py-1">
+        <li class="feature-values-item flex-shrink-0 border bg-light rounded-pill d-flex align-items-center p-1">
+            <span class="flex-shrink-0 me-1 px-2 py-1">
                 <span class="feature-value">${feature['featureValue']}</span>
                 <span class="feature-price text-muted">${feature['featurePrice']}</span>
             </span>
-            <div class="feature-options border-start ps-1 flex-shrink-0 flex-grow-1">
-                <a role="button" data-action="edit" class="d-block px-2 py-1" href="#" data-bs-toggle="modal" data-bs-target="#ftModal" onclick="modifyFt(this.closest('.feature-values-item'), ${ftCta.EDIT})">
+            <div class="feature-options border-start ps-1 flex-shrink-0">
+                <a role="button" class="d-block px-2 py-1" href="#" data-bs-toggle="modal" data-bs-target="#ftModal" onclick="modifyFt(this.closest('.feature-values-item'), ${ftCta.EDIT})">
                     <i class="fa-solid fa-edit"></i>
                 </a>
             </div>
@@ -266,12 +265,12 @@ function addFeatureUI(data) {
     let html = `
     <div class="card-body d-flex align-items-center gap-sm py-0">
         <p class="feature-name py-3 m-0 fw-bold">${data['featureName']}</p>
-        <button type="button" class="btn btn-sm btn-outline-success border-0 fs-4" title="Add feature" data-bs-toggle="modal" data-bs-target="#ftModal" onclick="modifyFt(this.closest('.list-features-item'), ${ftCta.ADD})">
+        <button type="button" class="btn btn-outline-success border-0 circle-sm flex-shrink-0 fs-4" title="Add feature" data-bs-toggle="modal" data-bs-target="#ftModal" onclick="modifyFt(this.closest('.list-features-item'), ${ftCta.ADD})">
             <i class="fa-solid fa-plus"></i>
         </button>
         <ul class="feature-values d-flex gap-sm overflow-auto-x py-3">${htmlValues}</ul>
     </div>
-    <div class="card-footer bg-white d-flex justify-content-between gap-md">
+    <div class="card-footer pe-1 bg-white d-flex justify-content-between align-items-center gap-md">
         <div>
             <p class="m-0">
                 <span class="text-muted">Required:</span>
@@ -282,13 +281,20 @@ function addFeatureUI(data) {
                 <span class="feature-answer-type">${data['answerType']}</span>
             </p>
         </div>
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle no-arrow" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+        <div class="btn-group dropdown">
+            <button class="btn btn-outline-secondary border-0 circle-sm fs-5 dropdown-toggle no-arrow" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa-solid fa-ellipsis-v"></i>
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                <li><a class="dropdown-item text-primary" href="#" data-bs-toggle="modal" data-bs-target="#ftEdtModal" onclick="editFeature(this.closest('.list-features-item'))">Edit feature</a></li>
-                <li><a class="dropdown-item text-danger" href="#" onclick="removeFeature(this.closest('.list-features-item'))">Remove</a></li>
+            <ul class="dropdown-menu dropdown-menu-end border-light shadow" aria-labelledby="dropdownMenu">
+                <li><h6 class="dropdown-header">Options</h6></li>
+                <li><a class="dropdown-item py-2 text-primary" href="#" data-bs-toggle="modal" data-bs-target="#ftEdtModal" onclick="editFeature(this.closest('.list-features-item'))">
+                    <span class="me-2"><i class="fa-solid fa-edit"></i></span>
+                    Edit feature
+                </a></li>
+                <li><a class="dropdown-item py-2 text-danger" href="#" onclick="removeFeature(this.closest('.list-features-item'))">
+                    <span class="me-2"><i class="fa-solid fa-trash-can"></i></span>
+                    Remove
+                </a></li>
             </ul>
         </div>
     </div>`

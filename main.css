@@ -1,3 +1,19 @@
+/* === add to carata css === */
+
+.list-features-item .feature-name {
+    max-width: 30%;
+}
+
+.dropup .dropdown-toggle.no-arrow::after,
+.dropdown .dropdown-toggle.no-arrow::after,
+.dropstart .dropdown-toggle.no-arrow::after,
+.dropend .dropdown-toggle.no-arrow::after {
+    display: none !important;
+}
+
+/* === end === */
+
+
 ol,
 ul {
     list-style: none;
@@ -20,6 +36,31 @@ ul {
     overflow-x: auto;
 }
 
-.dropdown-toggle.no-arrow::after {
-    display: none !important;
+.circle-tiny,
+.circle-sm,
+.circle-45,
+.circle-md {
+    padding: 0;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circle-tiny {
+    --size: 32px;
+}
+
+.circle-sm {
+    --size: 40px;
+}
+
+.circle-45 {
+    --size: 48px;
+}
+
+.circle-md {
+    --size: 120px;
 }
